@@ -12,15 +12,15 @@
 '''
 
 class Grafo:
-	def __init__(self, vertices, inicio, fim):
+	def __init__(self, vertices, fim):
 		self._vertices = vertices # um dicionário com vértices e pesos.
 		self._arestas = {}	# Dicionário contendo arestas e distâncias.
-		self.inicio = inicio	# Definindo o inicio da pesquisa.
+		self._inicio = None	# Definindo o inicio da pesquisa.
 		self.fim = fim	# Definindo a cidade de destino.
 
 	def addAresta(cls, a, b, distancia):
 		''' Aresta e distância entre os vértices. '''
-		cls._arestas[(a,b)] = distancia
+		cls._arestas[set(a,b)] = distancia
 
 	def getVertices(cls):
 		''' Retorna os vértices. '''
@@ -49,8 +49,13 @@ class Grafo:
 		else:
 			cls.getVertices()[vertice]['peso'] += novo_peso
 
-	def dijkstra(cls, pesquisa, menor_caminho=0, maior_ caminho = 0):
+	def setInicio(cls, vertice):
+		''' Define o começo da pesquisa. '''
+		cls._inicio = vertice
+
+	def dijkstra(cls, vertice, menor_caminho=0):
 		''' Procurando o menor caminho entre duas cidades. '''
+		pesquisa = cls.setInicio(vertice)
 
 		# Procurando a lista de adjacencia da cidade de partida
 		lista_adjacencia = cls.get_lista_adjacencia_vertice(pesquisa)
@@ -78,26 +83,24 @@ class Grafo:
 			if vertice == cls.fim:
 				if (cls.get_peso_vertice(pesquisa) < menor_caminho) or menor_caminho == 0:
 					menor_caminho = cls.get_peso_vertice(vertice)
-				if (cls.get_peso_vertice(pesquisa) > maior_caminho) or maior_caminho == 0:
-					maior_caminho = cls.get_peso_vertice(vertice)
-					
-				return menor_caminho, maior_caminho
-
+					return menor_caminho, maior_caminho
 
 			else:
-				caminho = cls.dijkstra(vertice, menor_caminho, maior_caminho)
+				caminho = cls.dijkstra(vertice, menor_caminho)
 
-		return maior_caminho - menor_caminho
+		return menor_caminho
 
 	def __str__(cls):
 		''' Printa a lista de vértices e arestas. '''
 		return str(cls.getVertices()) + '\n' + str(cls.getArestas())
 
 ''' ------------------------------------------------------------------- '''
+vertices = {} # dicionário com vértices e pesos
 
 ilhas, cabos = map(int, input().split())
 
-grafo = Grafo()
+for ilha in range(1, ilhas+1):
+	vertices[ilha] = None
 
 for cabo in range(cabos):
 	path = map(int, input().split())
