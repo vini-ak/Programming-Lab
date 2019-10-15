@@ -1,13 +1,5 @@
 ''' 
 
-1 - Criar um grafo não dirigido.
-
-											COISAS QUE FALTARAM FAZER
-
-
-2 - Adicionar cada aresta às arestas do grafo.
-3 - Chamar o método Dijkstra do Grafo para poder fazer a varredura tanto do menor caminho, quanto do maior caminho
-4 - Retornar o maior e o menor caminho possível.
 
 '''
 
@@ -16,7 +8,6 @@ class Grafo:
 		self._vertices = vertices # um dicionário com vértices e pesos.
 		self._arestas = {}	# Dicionário contendo arestas e distâncias.
 		self._inicio = None	# Definindo o inicio da pesquisa.
-		self._pesquisados = []	# Adiciona os nós já verificados para que haja verificação repetida.
 		self.fim = fim	# Definindo a cidade de destino.
 
 	def addAresta(cls, a, b, distancia):
@@ -44,21 +35,6 @@ class Grafo:
 		''' Retorna o peso de um determinado vértice.'''
 		return cls.getVertices()[vertice]['peso']
 
-	def getPesquisados(cls):
-		''' Retorna os vértices do GRAFO que já foram verificados.'''
-		return cls._pesquisados
-
-	def esvaziaPesquisados(cls):
-		''' Zera a lista de vértices pesquisados.'''
-		cls._pesquisados = []
-
-	def foiPesquisado(cls, vertice):
-		''' Retorna se o vértice já foi verificado ou não.'''
-		if vertice in cls._pesquisados:
-			return True
-		else:
-			return False
-
 	def set_peso_vertice(cls, vertice, novo_peso):
 		''' Alterando o peso de um vértice. '''
 		if cls.get_peso_vertice(vertice) == None:
@@ -73,20 +49,18 @@ class Grafo:
 		cls._inicio = vertice
 		cls.getVertices()[vertice]['peso'] = 0
 
-	def dijkstra(cls, v, menor_caminho=0):
+	def dijkstra(cls, v, menor_caminho = 0, path = []):
 
 		''' Procurando o menor caminho entre duas cidades. '''
 		pesquisa = v
-		print(pesquisa)
+		path.append(pesquisa)
 
 		# Procurando a lista de adjacencia da cidade de partida
 		lista_adjacencia = cls.get_lista_adjacencia_vertice(pesquisa)
 
 		for vertice in lista_adjacencia:
-			# A verificação só ocorrerá em vértices que ainda não foram verificados.
-			if not cls.foiPesquisado(vertice):
-				# Agora ele já está sendo pesquisado, então vou adicioná-lo à lista.
-				cls.getPesquisados().append(vertice)
+			# Se o vértice ainda não estiver no caminho
+			if vertice not in path:
 				# Pegando o peso do predecessor...
 				predecessor = cls.get_peso_vertice(pesquisa)
 				# Definindo a distancia no peso...
@@ -169,7 +143,6 @@ maior_caminho = 0
 for vertice in vertices.keys():
 	if vertice != destino:
 		grafo.setInicio(vertice)
-		grafo.esvaziaPesquisados()
 		dijkstra = grafo.dijkstra(vertice)
 
 		if dijkstra < menor_caminho or menor_caminho == 0:
@@ -177,3 +150,7 @@ for vertice in vertices.keys():
 
 		if dijkstra > maior_caminho:
 			maior_caminho = dijkstra
+
+		print(vertice, dijkstra)
+
+print(maior_caminho - menor_caminho)
