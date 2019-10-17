@@ -21,6 +21,10 @@ class Grafo:
 		cls._fim = fim
 
 
+	def getVertices(cls):
+		return cls._vertices
+
+
 	def get_lista_adjacencia(cls, pesquisa):
 		return cls._vertices[pesquisa]['lista_adjacencia']
 
@@ -31,6 +35,12 @@ class Grafo:
 
 	def set_peso(cls, pesquisa, peso):
 		cls._vertices[pesquisa]['peso'] = peso
+
+
+	def zera_pesos(cls):
+		vertices = cls.getVertices()
+		for v in range(1, len(vertices)+1):
+			cls.set_peso(v, None)
 
 
 # ============================ MÉTODOS PARA AS ARESTAS ====================================
@@ -68,7 +78,7 @@ class Grafo:
 				# Se o peso encontrado for menor do que o peso já
 				# estabelecido ou se este nó ainda não tiver um peso
 				# atribuído, o novo peso será atribuído.
-				if peso < cls.get_peso(vertice) or cls.get_peso == None:
+				if cls.get_peso(vertice) == None or peso < cls.get_peso(vertice):
 					cls.set_peso(vertice, peso)
 
 				# Se o vértice final foi encontrado, vamos comparar 
@@ -76,10 +86,10 @@ class Grafo:
 				if vertice == cls.getFim():
 					if peso < menor_caminho or menor_caminho == 0:
 						menor_caminho = peso
-						return menor_caminho
 
 				else:
 					menor_caminho = cls.dijkstra(vertice, menor_caminho)
+
 
 			# Se a lista de adjacência de um vértice foi completamente varrida,
 			# ele será removido da pilha e a busca será continuada
@@ -145,12 +155,14 @@ for vertice in vertices.keys():
 	if vertice != destino:
 		grafo.setInicio(vertice)
 		dijkstra = grafo.dijkstra(vertice, 0)
-		print(vertice,dijkstra)
 
 		if menor_caminho == 0 or dijkstra < menor_caminho and dijkstra != 0:
 			menor_caminho = dijkstra
 
 		if dijkstra > maior_caminho:
 			maior_caminho = dijkstra
+
+		# Zera
+		grafo.zera_pesos()
 
 print(maior_caminho - menor_caminho)
