@@ -1,3 +1,5 @@
+''' Só falta eu conseguir colocar uma pilha no Dikstra.'''
+
 class Grafo:
 	def __init__(self, vertices, inicio = 0, fim = 0):
 		self._vertices = vertices
@@ -46,35 +48,43 @@ class Grafo:
 # ======================================= DIJKSTRA ========================================
 
 
-	def dijkstra(cls, pesquisa, menor_caminho = 0):
+	def dijkstra(cls, pesquisa, menor_caminho = 0, pilha = []):
 
 		lista_adjacencia = cls.get_lista_adjacencia(pesquisa)
 
 		# Peso do vértice que está sendo verificado
 		predecessor = cls.get_peso(pesquisa)
 
-		if cls.getFim() in lista_adjacencia:
-			# O peso de um vértice é dado pela soma do peso do seu antecessor
-			# com a distância entre estes vértices.
-			
-			distancia = cls.getDistancia(pesquisa, cls.getFim())
+		# Adicionando o vértice aos verificados...
+		pilha.append(pesquisa)
 
-			peso = predecessor + distancia
-
-			if peso < menor_caminho or menor_caminho == 0:
-				menor_caminho = peso
-				cls.set_peso(cls.getFim(), peso)
-				return menor_caminho
-
-		else:
-
-			for vertice in lista_adjacencia:
-				# Definindo o peso...
+		for vertice in lista_adjacencia:
+			if vertice not in pilha:
+				# O peso de um vértice é o peso do vértice anterior
+				# somado à distância entre estes dois vértices.			
 				distancia = cls.getDistancia(pesquisa, vertice)
 				peso = predecessor + distancia
-				cls.set_peso(vertice, peso)
 
-				menor_caminho = cls.dijkstra(vertice, menor_caminho)
+				# Se o peso encontrado for menor do que o peso já
+				# estabelecido ou se este nó ainda não tiver um peso
+				# atribuído, o novo peso será atribuído.
+				if peso < cls.get_peso(vertice) or cls.get_peso == None:
+					cls.set_peso(vertice, peso)
+
+				# Se o vértice final foi encontrado, vamos comparar 
+				# os caminhos a fim de encontrar o menor possível.
+				if vertice == cls.getFim():
+					if peso < menor_caminho or menor_caminho == 0:
+						menor_caminho = peso
+						return menor_caminho
+
+				else:
+					menor_caminho = cls.dijkstra(vertice, menor_caminho)
+
+			# Se a lista de adjacência de um vértice foi completamente varrida,
+			# ele será removido da pilha e a busca será continuada
+			if vertice == lista_adjacencia[-1]:
+				pilha.pop()
 
 		return menor_caminho
 
