@@ -23,14 +23,7 @@ for l in range(n+1):
 	matriz.append(linha)
 
 for i in range(1,n+1):
-	peso = objetos[i-1][0]	# peso de um objeto
-	valor = objetos[i-1][1]	# valor de um objeto
 	for j in range(1,c+1):
-		'''esq_sup = matriz[i-1][j-1]
-								sup = matriz[i-1][j]
-								esq = matriz[i][j-1]
-								valor_maximo = maximo(esq, sup, esq_sup)'''
-
 		if objetos[i-1][0] <= j:
 			num = objetos[i-1][1] + matriz[i-1][j-objetos[i-1][0]]
 			esq = matriz[i-1][j]
