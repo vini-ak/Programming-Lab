@@ -1,151 +1,79 @@
-class Vertice:
-	''' Criando uma classe que defina o vértice:
-	métodos e atributos. '''
-	def __init__(self, numero):
-		self._numero = numero
-		self._peso = float('inf')
-		self._lista_adjacencia = []
-		self._verificado = False
-
-	def getNumero(cls):
-		''' Retorna o número (identificação) de um vértice. '''
-		return cls._numero
-
-	def getPeso(cls):
-		''' Retorna o peso de um vértice.'''
-		return cls._peso
-
-	def changePeso(cls, novoPeso):
-		''' Altera o peso de um vértice.'''
-		cls._peso = novoPeso
-
-	def getListaAdjacencia(cls):
-		''' Retorna a lista de adjacência de um vértice.'''
-		return cls._lista_adjacencia
-
-	def addListaAdjacencia(cls, vertice):
-		''' Adiciona um vértice à lista de adjacência.'''
-		cls._lista_adjacencia.append(vertice)
-
-
-class Grafo:
-	def __init__(self, vertices, inicio = None):
-		self._vertices = vertices
-		self._arestas = {}
-		self.inicio = inicio
-
-	def getVerticeByNumber(cls, numero):
-		''' Retorna uma classe vértice. '''
-		return cls._vertices[numero]
-	
-	def getVertices(cls):
-		''' Retorna a lista de vértices de um grafo.'''
-		return cls._vertices
-
-	def getArestas(cls):
-		''' Retorna todas as arestas de um grafo.'''
-		return cls._arestas
-
-	def addAresta(cls, a, b, distancia):
-		''' Adiciona uma aresta ao grafo. '''
-		if cls.getAresta(a, b) == None:
-			# Definindo a aresta para a lista de arestas de cada vértice.
-
-			# Verificando se os vértices já está incluso no 
-			# dicionário de arestas.
-			if a not in cls.getArestas().keys():
-				cls.getArestas()[a] = {}
-				cls.getArestas()[a][b] = distancia
-			elif b not in cls.getArestas()[a].keys():
-				cls.getArestas()[a][b] = distancia
-
-			if b not in cls.getArestas().keys():
-				cls.getArestas()[b] = {}
-				cls.getArestas()[b][a] = distancia
-
-			elif a not in cls.getArestas()[b].keys():
-				cls.getArestas()[b][a] = distancia
-
-			# Adicionando a na lista de adjacência de b
-			a.addListaAdjacencia(b)
-			# e b na lista de adjacẽncia de a.
-			b.addListaAdjacencia(a)
+def converteInt(string):
+	''' Função para converter os elementos de uma entrada
+	em números inteiros.'''
+	lista = []
+	n = ''
+	for i in string:
+		if i != " ":
+			n += i
 		else:
-			# Será verificada qual aresta é menor,
-			# pois não faz sentido uma aeromoça tomar
-			# o maior caminho entre duas cidades.
-			aresta = cls.getAresta(a, b)
+			lista += [int(n)]
+			n = ''
+	if n != '':
+		lista += [int(n)]
 
-			if distancia < aresta:
-				cls.getArestas()[a][b] = distancia
-				cls.getArestas()[b][a] = distancia
+	return lista
 
-	def getAresta(cls, a, b):
-		''' Retorna o comprimento de uma aresta. '''
-		try:
-			return cls._arestas[a][b]
-		except:
-			return None
+def dikjstra(arestas, pesos, v, inicio):
+	maior = float("-inf")	# A maior distancia de inicio até uma das n cidades
+	fila = [inicio]		# Fila do Dijkstra.
 
+	# Verificação dos elementos da fila...
+	while fila:
+		lista_adjacencia = arestas[inicio]	# Pegando a lista de adjacência
+		fila.pop(0)	# Removendo o elemento da fila
+		v[inicio] = 'verified'	# Isso diz que o nó acaba de ser verificado
+		for tupla in lista_adjacencia:
+			peso_atual = pesos[tupla[0]]	# Pegando o peso atual do vértice
+			peso_temp = pesos[inicio] + tupla[1]	# Definindo o peso encontrado a partir dessa lista de adjacência
+			if peso_temp < peso_atual:
+				# Se o peso encontrado for menor do que o peso anterior, o peso do vértice se altera.
+				pesos[tupla[0]] = peso_temp
+			if v[tupla[0]] != 'verified':
+				# Se o nó já tiver sido verificado ele não será adicionado à fila
+				# Logo, sua lista de adjacência não será varrida novamente.
+				fila.append(tupla[0])
+		if fila:
+			# A verificação continua a partir do começo da fila
+			inicio = fila[0]
 
-def dijkstra(grafo, inicio):
-	# Definindo os pesos:
-	for p in list(grafo.getVertices().values()):
-		p.changePeso(float("inf"))
-
-	# Definindo o peso inicial como 0.
-	start = grafo.getVerticeByNumber(inicio)
-	start.changePeso(0)
-
-	vertices = list(grafo.getVertices().values())
-	pesos = [0] * len(vertices)
-	maior_peso = 0
-
-	while vertices:
-		lista_adjacencia = start.getListaAdjacencia()
-		vertices.remove(start)
-
-		for vertice in lista_adjacencia:
-			peso_atual = vertice.getPeso()
-			peso_temp = start.getPeso() + grafo.getAresta(start, vertice)
-
-			if peso_atual == float("inf") or peso_temp < peso_atual:
-				vertice.changePeso(peso_temp)
-				pesos[vertice.getNumero()] = peso_temp
-
-		if vertices:
-			start = vertices[0]
-
-	for h in pesos:
-		if h > maior_peso:
-			maior_peso = h
+	for i in range(len(pesos)):
+		# Recuperando a lista de vértices.
+		v[i] = i
+		# Separando a maior distância entre cidades partindo de inicio.
+		if pesos[i] > maior:
+			maior = pesos[i]
 			
-	return maior_peso
+	return maior
 
 
-# ========================================================
+# ===========================================================================
 
+entrada1 = converteInt(input())	# passando o número de cidades e linhas aéreas
+cidades = entrada1[0]	# numero de cidades
+linhas_aereas = entrada1[1]	# numero de linhas aéreas
+arestas = []
+vertices = []
 
-# Informando o número de cidades e linhas aéreas.
-cidades, linhas_aereas = [int(x) for x in input().split()]
-
-vertices = {}
-
-for cidade in range(cidades):
-	vertice = Vertice(cidade)
-	vertices[cidade] = vertice
-
-# Criando um grafo a partir da lista de vértices
-grafo = Grafo(vertices)
+for v in range(cidades):
+	arestas.append([])
+	vertices += [v]
 
 for i in range(linhas_aereas):
-	cidade_a, cidade_b, distancia = [int(x) for x in input().split()]
-	grafo.addAresta(grafo.getVerticeByNumber(cidade_a), grafo.getVerticeByNumber(cidade_b), distancia)
+	entrada2 = converteInt(input())
+	cidade_a = entrada2[0]
+	cidade_b = entrada2[1]
+	distancia = entrada2[2]
 
-# Procurando o caminho máximo para uma aeromoça...
+	arestas[cidade_a] += [(cidade_b, distancia)]
+	arestas[cidade_b] += [(cidade_a, distancia)]
+
 maximo = float("inf")
+
 for j in range(cidades):
-	a = dijkstra(grafo, j)
+	pesos = [float('inf')] * cidades
+	pesos[j] = 0
+	a = dikjstra(arestas, pesos, vertices, j)
 	if a < maximo:
 		maximo = a
 
