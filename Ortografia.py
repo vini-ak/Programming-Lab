@@ -12,7 +12,7 @@ def minimo(n1, n2, n3):
 	else:
 		return n3
 
-def distanciaLevenshtein(a,b):
+def distanciaMinima(a,b):
 	# Criando uma tabela a * b
 	tabela = []
 	for i in range(len(a)):
@@ -25,20 +25,14 @@ def distanciaLevenshtein(a,b):
 	for c in range(len(b)):
 		tabela[0][c] = c
 
-	custo = 0
-
 	for x in range(1, len(a)):
 		for y in range(1, len(b)):
-			if a[x] == b[y]: 
-				custo = 0
+			if a[x] == b[y]:
+				tabela[x][y] = tabela[x-1][y-1]
 			else:
-				custo = 2 # Custo para substituição
-
-			tabela[x][y] = minimo(tabela[x-1][y] + 1, tabela[x][y-1] + 1, tabela[x-1][y-1] + custo)
+				tabela[x][y] = (minimo(tabela[x][y-1], tabela[x-1][y-1], tabela[x-1][y])+1) 
 
 	return tabela[len(a)-1][len(b)-1]
-
-
 
 
 
@@ -54,16 +48,11 @@ for q in range(m):
 	palavra = " "+input()
 	verificadas += [palavra]
 
-res = []
-print('\nDistâncias de edição\n\n')
 for pv in verificadas:
-	res_ver = []
+	res_ver = ""
 	for pc in certas:
-		dist_edicao = distanciaLevenshtein(pv,pc)
+		dist_edicao = distanciaMinima(pv,pc)
 		if dist_edicao <= 2:
-			res_ver += [pc]
+			res_ver += pc[1:] + " "
 
-	res += [res_ver]
-
-for linha in res:
-	print(linha)
+	print(res_ver[0:-1])
