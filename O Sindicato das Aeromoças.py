@@ -1,6 +1,9 @@
 def converteInt(string):
+<<<<<<< HEAD
 	''' Função para converter os elementos de uma entrada
 	em números inteiros.'''
+=======
+>>>>>>> 88dd24a87c5b542793626511fa225d233b1ad48a
 	lista = []
 	n = ''
 	for i in string:
@@ -15,6 +18,7 @@ def converteInt(string):
 	return lista
 
 def dikjstra(arestas, pesos, v, inicio):
+<<<<<<< HEAD
 	maior = float("-inf")	# A maior distancia de inicio até uma das n cidades
 	fila = [inicio]		# Fila do Dijkstra.
 
@@ -44,6 +48,26 @@ def dikjstra(arestas, pesos, v, inicio):
 		if pesos[i] > maior:
 			maior = pesos[i]
 			
+=======
+	maior = float("-inf")
+	while v:
+		lista_adjacencia = arestas[inicio]
+		v.remove(inicio)
+		for tupla in lista_adjacencia:
+			peso_atual = pesos[tupla[0]]
+			peso_temp = pesos[inicio] + tupla[1]
+			if peso_temp < peso_atual:
+				pesos[tupla[0]] = peso_temp
+		if v:
+			inicio = v[0]
+
+	for i in range(len(pesos)):
+		# Recuperando a lista de vértices.
+		v += [i]
+		# Separando a maior distância entre cidades partindo de inicio.
+		if pesos[i] > maior:
+			maior = pesos[i]
+>>>>>>> 88dd24a87c5b542793626511fa225d233b1ad48a
 	return maior
 
 
