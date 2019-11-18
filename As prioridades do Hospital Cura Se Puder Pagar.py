@@ -71,60 +71,15 @@ class Fila:
 	def isVazia(cls):
 		return cls.getInicio() == None
 
-	def inserir(cls, dados):
-		paciente = Node(dados)
+	def inserir(cls, dado):
+		paciente = Node(dado)
 		if cls.isVazia():
 			cls.setInicio(paciente)
 			cls.setFim(paciente)
 		else:
-			no = cls.getInicio()
-			found = False
-			while no is not None and found == False:
-				if paciente.prioridadePlano() > no.prioridadePlano():
-					paciente.setAnterior(no.getAnterior())
-					paciente.setProximo(no)
-					no.setAnterior(paciente)
-					found = True
-
-					if no is cls.getInicio():
-						cls.setInicio(paciente)
-					if no is cls.getFim():
-						cls.setFim(paciente)
-
-				elif paciente.prioridadePlano() == no.prioridadePlano():
-					if paciente.getGrau() > no.getGrau():
-						print('eu sou maior')
-						paciente.setAnterior(no.getAnterior())
-						paciente.setProximo(no)
-						no.setAnterior(paciente)
-						found = True
-
-						if no is cls.getInicio():
-							cls.setInicio(paciente)
-						if no is cls.getFim():
-							cls.setFim(paciente)
-
-					elif paciente.getGrau() == no.getGrau():
-						print("compara os nome")
-						if paciente.getNome() < no.getNome():
-							paciente.setAnterior(no.getAnterior())
-							paciente.setProximo(no)
-							no.setAnterior(paciente)
-							found = True
-
-							if no is cls.getInicio():
-								cls.setInicio(paciente)
-							if no is cls.getFim():
-								cls.setFim(paciente)
-
-				no = no.getProximo()
-				if no is not None:
-					print(no.getNome())
-
-			if not found:
-				cls.getFim().setProximo(paciente)
-				paciente.setAnterior(cls.getFim)
-				cls.setFim(paciente)
+			cls.getFim().setProximo(paciente)
+			paciente.setAnterior(cls.getFim())
+			cls.setFim(paciente)
 
 
 	def varrer(cls):
@@ -142,7 +97,7 @@ class Fila:
 			imprimeLista += str(i.getNome()) + " -> "
 			i = i.getProximo()
 			if i is None:
-				imprimeLista += 'Acabou esse carai'
+				imprimeLista += 'THE END'
 				
 		if imprimeLista == "":
 			imprimeLista = "Lista vazia kkkkkkk bichinha"
