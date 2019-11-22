@@ -81,7 +81,6 @@ class Fila:
 			paciente.setAnterior(cls.getFim())
 			cls.setFim(paciente)
 
-
 	def varrer(cls):
 		no = cls.getInicio()
 		while no is not None:
@@ -104,6 +103,8 @@ class Fila:
 		return imprimeLista
 
 
+def mergeSort(lista):
+	if lista.get
 
 
 # entrada:
