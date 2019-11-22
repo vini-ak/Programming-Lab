@@ -38,41 +38,45 @@ class Grafo:
 		self.getVertices().append(vertice)
 
 
-def dfs_recursiva(g, u, destino, passos = 1):
-	u.setVisitado()
-	for v in u.getVizinhos():
-		print(v.getDado())
-		if v is destino:
-			return True
-		if not v.getVisitado():
-			if dfs_recursiva(grafo,v, destino, passos+1):
-				return 'deu certo!'
+def dfs_recursiva(grafo, origem, destino, passos = 0, minimo_passos = float('inf')):
+	if origem is destino:	# Caso base: se o vértice que está sendo varrido é o final, será retornada a quantidade de passos até este vértice
+		return passos
 
-numero_cidades, o, d = map(int, input().split())
+	origem.setVisitado()	# Marcando o nó para evitar que entre numa recursão infinita.
+	passos += 1
+	for vizinho in origem.getVizinhos():
+		if not vizinho.getVisitado():
+			s = dfs_recursiva(grafo, vizinho, destino, passos)	# Define o total de passos de um caminho
+			if s < minimo_passos:	# Se este caminho é o menor
+				minimo_passos = s
+
+	return minimo_passos
+			
+
+numero_cidades, origem, destino = map(int, input().split())
 grafo = Grafo()
 
-for j in range(1, numero_cidades):
+for n in range(1, numero_cidades + 1):
+	vertice = Vertice(n)
+	grafo.addVertice(vertice)
+
+for i in range(numero_cidades - 1):
 	cidade_a, cidade_b = map(int, input().split())
-	
-	if no_a not in grafo.getVertices():
-		if cidade_a == o:
-			origem = no_a
-		if cidade_a == d:
-			destino = no_a
-		grafo.addVertice(no_a)
+	vertice_a = grafo.getVertices()[cidade_a - 1]	# Pegando o vértice da lista de vértices do grafo.
+	vertice_b = grafo.getVertices()[cidade_b - 1]	# Pegando o vértice da lista de vértices do grafo.
 
-	no_b = Vertice(cidade_b)
-	if no_b not in grafo.getVertices():
-		if cidade_b == o:
-			origem = no_b
-		if cidade_b == d:
-			destino = no_b
-		grafo.addVertice(no_b)
+	vertice_a.addVizinho(vertice_b)	# Colocando o vertice_b na lista de adjacencia de vertice_a
+	vertice_b.addVizinho(vertice_a)	# Colocando o vertice_a na lista de adjacencia de vertice_b
 
+	# Definindo o vértice de origem e de destino do grafo:
+	if cidade_a == origem:
+		vertice_origem = vertice_a
+	elif cidade_a == destino:
+		vertice_destino = vertice_a
 
-	no_a.addVizinho(no_b)
-	no_b.addVizinho(no_a)
+	if cidade_b == origem:
+		vertice_origem = vertice_b
+	elif cidade_b == destino:
+		vertice_destino = vertice_b
 
-for no in grafo.getVertices():
-	print(no.getVizinhos())
-print(dfs_recursiva(grafo, origem, destino))
+print(dfs_recursiva(grafo, vertice_origem, vertice_destino))
