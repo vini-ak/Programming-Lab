@@ -1,5 +1,3 @@
-''' O problema do código está na lista de adjacência para cada vértice.'''
-
 class Vertice:
 	''' Vertice de um grafo. '''
 	def __init__(self, dado, visitado = False):
